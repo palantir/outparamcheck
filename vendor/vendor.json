@@ -1,0 +1,73 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "5rPfda8jFccr3A6heL+JAmi9K9g=",
+			"path": "github.com/davecgh/go-spew/spew",
+			"revision": "5215b55f46b2b919f50a1df0eaa5886afe4e3b3d",
+			"revisionTime": "2015-11-05T21:09:06Z"
+		},
+		{
+			"checksumSHA1": "/FDxiBMqDvQ0ldqUPVDzGxTGJU8=",
+			"path": "github.com/dustin/go-humanize",
+			"revision": "fef948f2d241bd1fd0631108ecc2c9553bae60bf",
+			"revisionTime": "2016-06-23T01:40:21Z"
+		},
+		{
+			"checksumSHA1": "hDuX7ev2IPZqz+3dbmvNNE6rQd4=",
+			"path": "github.com/kisielk/gotool",
+			"revision": "94d5dba705240ba73ce5d65d83ce44adc749b440",
+			"revisionTime": "2016-07-10T16:56:18Z"
+		},
+		{
+			"checksumSHA1": "6r2EbOhCRemi6LohEQPS2HGK7ao=",
+			"path": "github.com/palantir/stacktrace",
+			"revision": "5a74c62b11cfd8b2cb9374c785dd965d9a2b4e53",
+			"revisionTime": "2016-04-10T20:59:47Z"
+		},
+		{
+			"checksumSHA1": "YMAHXE8lCDGzmdCDaf/kL3lDD6E=",
+			"path": "github.com/palantir/stacktrace/cleanpath",
+			"revision": "5a74c62b11cfd8b2cb9374c785dd965d9a2b4e53",
+			"revisionTime": "2016-04-10T20:59:47Z"
+		},
+		{
+			"checksumSHA1": "LuFv4/jlrmFNnDb/5SCSEPAM9vU=",
+			"path": "github.com/pmezard/go-difflib/difflib",
+			"revision": "792786c7400a136282c1664665ae0a8db921c6c2",
+			"revisionTime": "2016-01-10T10:55:54Z"
+		},
+		{
+			"checksumSHA1": "iydUphwYqZRq3WhstEdGsbvBAKs=",
+			"path": "github.com/stretchr/testify/assert",
+			"revision": "d77da356e56a7428ad25149ca77381849a6a5232",
+			"revisionTime": "2016-06-15T09:26:46Z"
+		},
+		{
+			"checksumSHA1": "P9FJpir2c4G5PA46qEkaWy3l60U=",
+			"path": "github.com/stretchr/testify/require",
+			"revision": "d77da356e56a7428ad25149ca77381849a6a5232",
+			"revisionTime": "2016-06-15T09:26:46Z"
+		},
+		{
+			"checksumSHA1": "8QUPOpsU35L0haBAhsFzsV4gPDs=",
+			"path": "golang.org/x/tools/go/ast/astutil",
+			"revision": "a2a552218a0e22e6fb22469f49ef371b492f6178",
+			"revisionTime": "2016-06-13T23:43:03Z"
+		},
+		{
+			"checksumSHA1": "AVET+5jDH2MEvtFi1I22DFHJswI=",
+			"path": "golang.org/x/tools/go/buildutil",
+			"revision": "a2a552218a0e22e6fb22469f49ef371b492f6178",
+			"revisionTime": "2016-06-13T23:43:03Z"
+		},
+		{
+			"checksumSHA1": "oP1vuCE1PtUjnt+HMX+SvIUG4II=",
+			"path": "golang.org/x/tools/go/loader",
+			"revision": "a2a552218a0e22e6fb22469f49ef371b492f6178",
+			"revisionTime": "2016-06-13T23:43:03Z"
+		}
+	],
+	"rootPath": "github.com/palantir/outparamcheck"
+}
