@@ -47,7 +47,7 @@ the `github.com/palantir/example/config.Load` function is an output parameter, t
 
 ```json
 {
-    "github.com/palantir/go-palantir/configloading.LoadConfig": [0]
+    "github.com/palantir/example/config.Load": [0]
 }
 ```
 
@@ -59,7 +59,7 @@ ignore the built-in checks.
 Example invocation configured using JSON directly:
 
 ```
-./outparamcheck -config '{"github.com/palantir/go-palantir/configloading.LoadConfig":[0]}' ./...
+./outparamcheck -config '{"github.com/palantir/example/config.Load":[0]}' ./...
 ```
 
 Example invocation using JSON specified in the file `config.json`:
