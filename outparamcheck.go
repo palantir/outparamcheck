@@ -21,6 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+
 package outparamcheck
 
 import (
@@ -117,10 +118,10 @@ func loadCfgFromPath(cfgPath string) (Config, error) {
 	return loadCfg(string(cfgBytes))
 }
 
-func loadCfg(cfgJson string) (Config, error) {
+func loadCfg(cfgJSON string) (Config, error) {
 	var cfg Config
-	if err := json.Unmarshal([]byte(cfgJson), &cfg); err != nil {
-		return Config{}, stacktrace.Propagate(err, "Failed to unmarshal json", cfgJson)
+	if err := json.Unmarshal([]byte(cfgJSON), &cfg); err != nil {
+		return Config{}, stacktrace.Propagate(err, "Failed to unmarshal json", cfgJSON)
 	}
 	return cfg, nil
 }
