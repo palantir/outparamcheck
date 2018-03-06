@@ -19,9 +19,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+
 package outparamcheck
 
-// The values are the argument indices which are output parameters.
+// Config values are the argument indices which are output parameters.
 type Config map[string][]int
 
 var defaultCfg = Config(
