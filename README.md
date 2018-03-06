@@ -24,7 +24,7 @@ Install
 =======
 
 ```
-go get -u github.com/palantir/outparamcheck/main/outparamcheck
+go get -u github.com/palantir/outparamcheck
 ```
 
 Usage
