@@ -22,10 +22,6 @@ type OutParamError struct {
 
 func (err OutParamError) Error() string {
 	pos := err.Pos.String()
-	// Trim prefix including /src/
-	if i := strings.Index(pos, "/src/"); i != -1 {
-		pos = pos[i+len("/src/"):]
-	}
 
 	line := err.Line
 	comment := strings.Index(line, "//")
