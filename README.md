@@ -1,6 +1,5 @@
 outparamcheck
 =============
-
 `outparamcheck` is a static code checker for Go based on [errcheck](https://github.com/kisielk/errcheck). It verifies
 that functions that take output parameters defined as `interface{}` types are passed pointers to an object rather than
 a concrete object.
@@ -22,14 +21,12 @@ use a configuration file to add to the set of functions that are checked.
 
 Install
 =======
-
 ```
 go get -u github.com/palantir/outparamcheck
 ```
 
 Usage
 =====
-
 Run `outparamcheck` with the default checks on all packages within the current directory:
 
 ```
@@ -38,7 +35,6 @@ Run `outparamcheck` with the default checks on all packages within the current d
 
 Configuration
 =============
-
 Additional checks can be configured using JSON. The JSON can be provided to the check directly as a parameter or by
 specifying the path to a file that contains the configuration. The tool accepts a single JSON map where the keys are the
 name of the function to be checked and the values are an array that specifies the parameter indices of the "out"
