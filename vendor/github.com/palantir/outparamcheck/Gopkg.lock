@@ -15,21 +15,9 @@
 
 [[projects]]
   name = "github.com/kisielk/gotool"
-  packages = [
-    ".",
-    "internal/load",
-  ]
+  packages = [".","internal/load"]
   revision = "80517062f582ea3340cd4baf70e86d539ae7d84d"
   version = "v1.0.0"
-
-[[projects]]
-  name = "github.com/palantir/outparamcheck"
-  packages = [
-    "exprs",
-    "outparamcheck",
-  ]
-  revision = "5786d96763fcad4bd8938541e38fa55a60705264"
-  version = "v1.1.0"
 
 [[projects]]
   name = "github.com/pkg/errors"
@@ -45,26 +33,19 @@
 
 [[projects]]
   name = "github.com/stretchr/testify"
-  packages = [
-    "assert",
-    "require",
-  ]
+  packages = ["assert","require"]
   revision = "12b6f73e6084dad08a7c6e575284b177ecafbc71"
   version = "v1.2.1"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/tools"
-  packages = [
-    "go/ast/astutil",
-    "go/buildutil",
-    "go/loader",
-  ]
+  packages = ["go/ast/astutil","go/buildutil","go/loader"]
   revision = "059bec968c61383b574810040ba9410712de36c5"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "949edfb7970a92fcbe575621a031ecef83743bce42ac64210b09f57483246419"
+  inputs-digest = "b51e76725b196e4c52c3576243aa0b3448bbff58dbc3362e352f5499713c70b8"
   solver-name = "gps-cdcl"
   solver-version = 1
