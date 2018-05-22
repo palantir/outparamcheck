@@ -1,0 +1,16 @@
+header: |
+  // Copyright 2016 Palantir Technologies, Inc. All rights reserved.
+  // Licensed under the MIT License. See LICENSE in the project root
+  // for license information.
+custom-headers:
+- name: outparamcheck-custom
+  header: |
+    // Copyright 2013 Kamil Kisiel
+    // Modifications copyright 2016 Palantir Technologies, Inc.
+    // Licensed under the MIT License. See LICENSE in the project root
+    // for license information.
+  paths:
+  - exprs
+  - outparamcheck/error.go
+  - outparamcheck/outparamcheck.go
+  - outparamcheck/outparamcheck_test.go
