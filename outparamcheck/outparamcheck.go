@@ -208,7 +208,13 @@ func isAddr(expr ast.Expr) bool {
 		child, ok := expr.X.(*ast.UnaryExpr)
 		return ok && child.Op == token.AND
 	case *ast.Ident:
-		// Allow passing literal nil
+		if expr.Obj != nil && expr.Obj.Decl != nil {
+			switch child := expr.Obj.Decl.(type) {
+			case *ast.AssignStmt:
+				return isAddr(child.Rhs[0])
+			}
+		}
+		// Allow passing a pointer or literal nil
 		return expr.Name == "nil"
 	default:
 		return false

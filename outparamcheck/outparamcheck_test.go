@@ -20,81 +20,155 @@ import (
 	"golang.org/x/tools/go/loader"
 )
 
-const prog = `
-package main
-
-import (
-	"encoding/json"
-)
-
-func main() {
-	j := []byte("...")
-	var x interface{}
-	json.Unmarshal(j, x)
-	json.Unmarshal(j, &x)
-	json.Unmarshal(j, *&x)
-	json.Unmarshal(j, nil)
-}
-`
-
 func TestOutParamCheck(t *testing.T) {
-	// write program to temp file
-	tmpf, cleanup := writeTempFile(t, prog)
-	defer cleanup()
-
-	// parse program
-	fset := token.NewFileSet()
-	file, err := parser.ParseFile(fset, tmpf, prog, 0)
-	require.NoError(t, err)
-
-	// type information will be populated by type checker
-	info := types.Info{
-		Types: map[ast.Expr]types.TypeAndValue{},
-		Uses:  map[*ast.Ident]types.Object{},
-	}
-
-	// hypothetical package
-	packagePath := "github.com/palantir/outparamcheck"
-	packageName := "main"
-	pkg := types.NewPackage(packagePath, packageName)
-
-	// run type checker
-	cfg := &types.Config{
-		Importer: importer.For("gc", nil),
-	}
-	files := []*ast.File{file}
-	err = types.NewChecker(cfg, fset, pkg, &info).Files(files)
-	require.NoError(t, err)
-
-	// assert type information filled in
-	assert.NotEqual(t, 0, len(info.Types))
-	assert.NotEqual(t, 0, len(info.Uses))
-
-	// run out-param checker
-	errs := run(&loader.Program{
-		Fset: fset,
-		Created: []*loader.PackageInfo{{
-			Pkg:   pkg,
-			Files: files,
-			Info:  info,
-		}},
-	}, defaultCfg)
-
-	// there should be one failure
-	expected := []OutParamError{
+	tcs := []struct {
+		name     string
+		input    string
+		expected []OutParamError
+	}{
 		{
-			Pos: token.Position{
-				Filename: tmpf,
-				Offset:   116,
-				Line:     11,
-				Column:   20,
+			name: "interface",
+			input: `
+			package main
+			
+			import (
+				"encoding/json"
+			)
+			
+			func main() {
+				j := []byte("...")
+				var x interface{}
+				json.Unmarshal(j, x)
+				json.Unmarshal(j, &x)
+				json.Unmarshal(j, *&x)
+				json.Unmarshal(j, nil)
+			}
+			`,
+			expected: []OutParamError{
+				{
+					Pos: token.Position{
+						Filename: "", // will be filled in by the test case run
+						Offset:   146,
+						Line:     11,
+						Column:   23,
+					},
+					Line:     `json.Unmarshal(j, x)`,
+					Method:   "Unmarshal",
+					Argument: 1,
+				},
 			},
-			Line:     `json.Unmarshal(j, x)`,
-			Method:   "Unmarshal",
-			Argument: 1,
+		},
+		{
+			name: "struct based",
+			input: `
+			package main
+			
+			import (
+				"encoding/json"
+			)
+			
+			type  A struct{}
+
+			func main() {		
+				x := A{}
+				pointerX := &x
+				
+				j := []byte("...")
+				json.Unmarshal(j, x)
+				json.Unmarshal(j, pointerX)
+				json.Unmarshal(j, &x)
+				json.Unmarshal(j, *&x)
+				json.Unmarshal(j, nil)
+			}
+			`,
+			expected: []OutParamError{
+				{
+					Pos: token.Position{
+						Filename: "", // will be filled in by the test case run
+						Offset:   184,
+						Line:     15,
+						Column:   23,
+					},
+					Line:     `json.Unmarshal(j, x)`,
+					Method:   "Unmarshal",
+					Argument: 1,
+				},
+			},
+		},
+		{
+			name: "declared within if block",
+			input: `
+			package main
+			
+			import (
+				"encoding/json"
+			)
+			
+			type  A struct{}
+
+			func main() {		
+				x := A{}
+				j := []byte("...")
+				
+				if pointerX := &x; true{
+					json.Unmarshal(j, pointerX)
+				}
+			}
+			`,
 		},
 	}
-	assert.Equal(t, expected, errs)
+
+	for _, tc := range tcs {
+		// write program to temp file
+		tmpf, cleanup := writeTempFile(t, tc.input)
+		defer cleanup()
+
+		// update the expected outparam output filename
+		for i := range tc.expected {
+			tc.expected[i].Pos.Filename = tmpf
+		}
+
+		// parse program
+		fset := token.NewFileSet()
+		file, err := parser.ParseFile(fset, tmpf, tc.input, 0)
+		require.NoError(t, err)
+
+		// type information will be populated by type checker
+		info := types.Info{
+			Types: map[ast.Expr]types.TypeAndValue{},
+			Uses:  map[*ast.Ident]types.Object{},
+		}
+
+		// hypothetical package
+		packagePath := "github.com/palantir/outparamcheck"
+		packageName := "main"
+		pkg := types.NewPackage(packagePath, packageName)
+
+		// run type checker
+		cfg := &types.Config{
+			Importer: importer.For("gc", nil),
+		}
+		files := []*ast.File{file}
+		err = types.NewChecker(cfg, fset, pkg, &info).Files(files)
+		require.NoError(t, err)
+
+		// assert type information filled in
+		assert.NotEqual(t, 0, len(info.Types))
+		assert.NotEqual(t, 0, len(info.Uses))
+
+		// run out-param checker
+		errs := run(&loader.Program{
+			Fset: fset,
+			Created: []*loader.PackageInfo{{
+				Pkg:   pkg,
+				Files: files,
+				Info:  info,
+			}},
+		}, defaultCfg)
+
+		// assert expectations
+		assert.Equal(t, tc.expected, errs)
+	}
 }
 
 func writeTempFile(t *testing.T, contents string) (path string, cleanup func()) {
