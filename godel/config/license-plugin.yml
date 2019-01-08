@@ -1,5 +1,5 @@
 header: |
-  // Copyright 2016 Palantir Technologies, Inc. All rights reserved.
+  // Copyright {{YEAR}} Palantir Technologies, Inc. All rights reserved.
   // Licensed under the MIT License. See LICENSE in the project root
   // for license information.
 custom-headers:
