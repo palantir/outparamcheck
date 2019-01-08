@@ -71,3 +71,7 @@ workflows:
     jobs:
       - go-1.10
       - go-1.9
+template.sh references an invalid template: go-verify-oss, available options: ./templates/frontend-library-oss.config.yml
+./templates/go-distribution-oss.config.yml
+./templates/go-library-oss.config.yml
+./templates/java-library-oss.config.yml
