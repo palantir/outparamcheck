@@ -6,18 +6,15 @@
 package outparamcheck
 
 import (
-	"go/ast"
-	"go/importer"
-	"go/parser"
 	"go/token"
-	"go/types"
 	"io/ioutil"
-	"os"
+	"path"
 	"testing"
 
+	"github.com/nmiyake/pkg/dirs"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"golang.org/x/tools/go/loader"
+	"golang.org/x/tools/go/packages"
 )
 
 func TestOutParamCheck(t *testing.T) {
@@ -118,80 +115,34 @@ func TestOutParamCheck(t *testing.T) {
 		},
 	}
 
+	tmpDir, cleanup, err := dirs.TempDir(".", "")
+	require.NoError(t, err)
+	defer cleanup()
+
 	for _, tc := range tcs {
 		// write program to temp file
-		tmpf, cleanup := writeTempFile(t, tc.input)
-		defer cleanup()
+		currCaseDir, err := ioutil.TempDir(tmpDir, "")
+		require.NoError(t, err)
+
+		fpath := path.Join(currCaseDir, "main.go")
+		err = ioutil.WriteFile(fpath, []byte(tc.input), 0644)
+		require.NoError(t, err)
+
+		// load package for program
+		pkgs, err := packages.Load(&packages.Config{
+			Mode: packages.LoadSyntax,
+		}, "./"+currCaseDir)
+		require.NoError(t, err)
 
 		// update the expected outparam output filename
 		for i := range tc.expected {
-			tc.expected[i].Pos.Filename = tmpf
+			tc.expected[i].Pos.Filename = pkgs[0].GoFiles[0]
 		}
-
-		// parse program
-		fset := token.NewFileSet()
-		file, err := parser.ParseFile(fset, tmpf, tc.input, 0)
-		require.NoError(t, err)
-
-		// type information will be populated by type checker
-		info := types.Info{
-			Types: map[ast.Expr]types.TypeAndValue{},
-			Uses:  map[*ast.Ident]types.Object{},
-		}
-
-		// hypothetical package
-		packagePath := "github.com/palantir/outparamcheck"
-		packageName := "main"
-		pkg := types.NewPackage(packagePath, packageName)
-
-		// run type checker
-		cfg := &types.Config{
-			Importer: importer.For("gc", nil),
-		}
-		files := []*ast.File{file}
-		err = types.NewChecker(cfg, fset, pkg, &info).Files(files)
-		require.NoError(t, err)
-
-		// assert type information filled in
-		assert.NotEqual(t, 0, len(info.Types))
-		assert.NotEqual(t, 0, len(info.Uses))
 
 		// run out-param checker
-		errs := run(&loader.Program{
-			Fset: fset,
-			Created: []*loader.PackageInfo{{
-				Pkg:   pkg,
-				Files: files,
-				Info:  info,
-			}},
-		}, defaultCfg)
+		errs := run(pkgs, defaultCfg)
 
 		// assert expectations
 		assert.Equal(t, tc.expected, errs)
 	}
-}
-
-func writeTempFile(t *testing.T, contents string) (path string, cleanup func()) {
-	tmpf, err := ioutil.TempFile("", "")
-	require.NoError(t, err, "failed to create temp file")
-
-	cleanup = func() {
-		err = os.Remove(tmpf.Name())
-		assert.NoError(t, err, "failed to remove temp file")
-	}
-
-	remove := true
-	defer func() {
-		err = tmpf.Close()
-		assert.NoError(t, err, "failed to close temp file")
-		if remove {
-			cleanup()
-		}
-	}()
-
-	_, err = tmpf.WriteString(contents)
-	require.NoError(t, err, "failed to write temp file")
-
-	remove = false
-	return tmpf.Name(), cleanup
 }
