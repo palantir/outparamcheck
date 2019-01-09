@@ -56,6 +56,219 @@ func TestOutParamCheck(t *testing.T) {
 			},
 		},
 		{
+			name: "assignment",
+			input: `
+			package main
+			
+			import (
+				"encoding/json"
+			)
+			
+			func main() {
+				j := []byte("...")
+				var x interface{}
+				_ = json.Unmarshal(j, x)
+			}
+			`,
+			expected: []OutParamError{
+				{
+					Pos: token.Position{
+						Filename: "", // will be filled in by the test case run
+						Offset:   150,
+						Line:     11,
+						Column:   27,
+					},
+					Line:     `_ = json.Unmarshal(j, x)`,
+					Method:   "Unmarshal",
+					Argument: 1,
+				},
+			},
+		},
+		{
+			name: "go",
+			input: `
+			package main
+			
+			import (
+				"encoding/json"
+			)
+			
+			func main() {
+				j := []byte("...")
+				var x interface{}
+				go json.Unmarshal(j, x)
+			}
+			`,
+			expected: []OutParamError{
+				{
+					Pos: token.Position{
+						Filename: "", // will be filled in by the test case run
+						Offset:   149,
+						Line:     11,
+						Column:   26,
+					},
+					Line:     `go json.Unmarshal(j, x)`,
+					Method:   "Unmarshal",
+					Argument: 1,
+				},
+			},
+		},
+		{
+			name: "defer",
+			input: `
+			package main
+			
+			import (
+				"encoding/json"
+			)
+			
+			func main() {
+				j := []byte("...")
+				var x interface{}
+				defer json.Unmarshal(j, x)
+			}
+			`,
+			expected: []OutParamError{
+				{
+					Pos: token.Position{
+						Filename: "", // will be filled in by the test case run
+						Offset:   152,
+						Line:     11,
+						Column:   29,
+					},
+					Line:     `defer json.Unmarshal(j, x)`,
+					Method:   "Unmarshal",
+					Argument: 1,
+				},
+			},
+		},
+		{
+			name: "send",
+			input: `
+			package main
+			
+			import (
+				"encoding/json"
+			)
+			
+			func main() {
+				c := make(chan error)
+				j := []byte("...")
+				var x interface{}
+				c <- json.Unmarshal(j, x)
+			}
+			`,
+			expected: []OutParamError{
+				{
+					Pos: token.Position{
+						Filename: "", // will be filled in by the test case run
+						Offset:   177,
+						Line:     12,
+						Column:   28,
+					},
+					Line:     `c <- json.Unmarshal(j, x)`,
+					Method:   "Unmarshal",
+					Argument: 1,
+				},
+			},
+		},
+		{
+			name: "return",
+			input: `
+			package main
+			
+			import (
+				"encoding/json"
+			)
+			
+			func foo() error {
+				j := []byte("...")
+				var x interface{}
+				return json.Unmarshal(j, x)
+			}
+			`,
+			expected: []OutParamError{
+				{
+					Pos: token.Position{
+						Filename: "", // will be filled in by the test case run
+						Offset:   158,
+						Line:     11,
+						Column:   30,
+					},
+					Line:     `return json.Unmarshal(j, x)`,
+					Method:   "Unmarshal",
+					Argument: 1,
+				},
+			},
+		},
+		{
+			name: "in case statement",
+			input: `
+			package main
+			
+			import (
+				"encoding/json"
+			)
+			
+			func main() {
+				j := []byte("...")
+				var x interface{}
+				switch {
+					case json.Unmarshal(j, x) == nil:
+						_ = x
+				}
+			}
+			`,
+			expected: []OutParamError{
+				{
+					Pos: token.Position{
+						Filename: "", // will be filled in by the test case run
+						Offset:   165,
+						Line:     12,
+						Column:   29,
+					},
+					Line:     `case json.Unmarshal(j, x) == nil:`,
+					Method:   "Unmarshal",
+					Argument: 1,
+				},
+			},
+		},
+		{
+			name: "in struct literal assignment",
+			input: `
+			package main
+			
+			import (
+				"encoding/json"
+			)
+			
+			type errStruct struct {
+				err error
+			}
+
+			func main() {
+				j := []byte("...")
+				var x interface{}
+				_ = errStruct {
+					err: json.Unmarshal(j, x), 
+				}
+			}
+			`,
+			expected: []OutParamError{
+				{
+					Pos: token.Position{
+						Filename: "", // will be filled in by the test case run
+						Offset:   219,
+						Line:     16,
+						Column:   29,
+					},
+					Line:     `err: json.Unmarshal(j, x),`,
+					Method:   "Unmarshal",
+					Argument: 1,
+				},
+			},
+		},
+		{
 			name: "struct based",
 			input: `
 			package main

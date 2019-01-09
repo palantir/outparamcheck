@@ -125,15 +125,50 @@ type visitor struct {
 
 func (v *visitor) Visit(node ast.Node) ast.Visitor {
 	switch stmt := node.(type) {
-	case *ast.ExprStmt:
-		call, ok := stmt.X.(*ast.CallExpr)
-		if !ok {
-			break
+	case *ast.AssignStmt:
+		for _, expr := range stmt.Rhs {
+			v.processExpression(expr)
 		}
+	case *ast.GoStmt:
+		v.processExpression(stmt.Call)
+	case *ast.DeferStmt:
+		v.processExpression(stmt.Call)
+	case *ast.SendStmt:
+		v.processExpression(stmt.Value)
+	case *ast.ReturnStmt:
+		for _, expr := range stmt.Results {
+			v.processExpression(expr)
+		}
+	case *ast.SwitchStmt:
+		for _, stmt := range stmt.Body.List {
+			if caseClauseStmt, ok := stmt.(*ast.CaseClause); ok {
+				for _, expr := range caseClauseStmt.List {
+					v.processExpression(expr)
+				}
+			}
+		}
+	case *ast.ExprStmt:
+		v.processExpression(stmt.X)
+	}
+	return v
+}
 
+func (v *visitor) processExpression(expr ast.Expr) {
+	switch expr := expr.(type) {
+	case *ast.BinaryExpr:
+		v.processExpression(expr.X)
+		v.processExpression(expr.Y)
+	case *ast.KeyValueExpr:
+		v.processExpression(expr.Value)
+	case *ast.CompositeLit:
+		for _, subExpr := range expr.Elts {
+			v.processExpression(subExpr)
+		}
+	case *ast.CallExpr:
+		call := expr
 		key, method, ok := v.keyAndName(call)
 		if !ok {
-			break
+			return
 		}
 		for name, outs := range v.cfg {
 			// Suffix-matching so they also apply to vendored packages
@@ -147,7 +182,6 @@ func (v *visitor) Visit(node ast.Node) ast.Visitor {
 			}
 		}
 	}
-	return v
 }
 
 func (v *visitor) keyAndName(call *ast.CallExpr) (key string, name string, ok bool) {
