@@ -26,6 +26,17 @@
   revision = "ae0375219445def9b33b6fcbf5eb8f4dd68ea561"
 
 [[projects]]
+  digest = "1:b3307b460b110cfa5a2fb16e6faa3c6a8e99cb2e463b12be1f3c3c7c8201d097"
+  name = "github.com/palantir/outparamcheck"
+  packages = [
+    "exprs",
+    "outparamcheck",
+  ]
+  pruneopts = "UT"
+  revision = "07f8ddf293f047a1e128f3cbd3fee80aaff46919"
+  version = "v1.3.0"
+
+[[projects]]
   digest = "1:40e195917a951a8bf867cd05de2a46aaf1806c50cf92eebf4c16f78cd196f747"
   name = "github.com/pkg/errors"
   packages = ["."]
@@ -77,6 +88,8 @@
   input-imports = [
     "github.com/dustin/go-humanize",
     "github.com/nmiyake/pkg/dirs",
+    "github.com/palantir/outparamcheck/exprs",
+    "github.com/palantir/outparamcheck/outparamcheck",
     "github.com/pkg/errors",
     "github.com/stretchr/testify/assert",
     "github.com/stretchr/testify/require",
