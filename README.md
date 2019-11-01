@@ -1,3 +1,7 @@
+<p align="right">
+<a href="https://autorelease.general.dmz.palantir.tech/palantir/outparamcheck"><img src="https://img.shields.io/badge/Perform%20an-Autorelease-success.svg" alt="Autorelease"></a>
+</p>
+
 outparamcheck
 =============
 `outparamcheck` is a static code checker for Go based on [errcheck](https://github.com/kisielk/errcheck). It verifies
