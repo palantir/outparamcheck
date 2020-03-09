@@ -1,0 +1,5 @@
+type: fix
+fix:
+  description: Update modules
+  links:
+  - https://github.com/palantir/outparamcheck/pull/38
