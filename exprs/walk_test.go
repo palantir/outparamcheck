@@ -12,9 +12,8 @@ import (
 	"go/token"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-
 	"github.com/palantir/outparamcheck/exprs"
+	"github.com/stretchr/testify/assert"
 )
 
 var stmtCases = []struct {
