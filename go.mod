@@ -7,7 +7,7 @@ require (
 	github.com/nmiyake/pkg/dirs v1.0.0
 	github.com/pkg/errors v0.8.1
 	github.com/stretchr/testify v1.9.0
-	golang.org/x/tools v0.25.0
+	golang.org/x/tools v0.26.0
 )
 
 require (
