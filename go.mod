@@ -3,7 +3,7 @@ module github.com/palantir/outparamcheck
 go 1.24.0
 
 require (
-	github.com/dustin/go-humanize v1.0.0
+	github.com/dustin/go-humanize v1.0.1
 	github.com/nmiyake/pkg/dirs v1.1.0
 	github.com/pkg/errors v0.8.1
 	github.com/stretchr/testify v1.10.0
