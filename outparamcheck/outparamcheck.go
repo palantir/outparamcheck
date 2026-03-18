@@ -11,7 +11,8 @@ import (
 	"go/ast"
 	"go/token"
 	"go/types"
-	"io/ioutil"
+	"maps"
+	"os"
 	"sort"
 	"strings"
 	"sync"
@@ -33,14 +34,10 @@ func Run(cfgParam string, paths []string) error {
 		if err != nil {
 			return errors.Wrapf(err, "Failed to load configuration from parameter %s", cfgParam)
 		}
-		for key, val := range usrCfg {
-			cfg[key] = val
-		}
+		maps.Copy(cfg, usrCfg)
 	}
 	// add default config (values for default will override any user-supplied config for the same keys)
-	for key, val := range defaultCfg {
-		cfg[key] = val
-	}
+	maps.Copy(cfg, defaultCfg)
 
 	pkgs, err := load(paths)
 	if err != nil {
@@ -83,7 +80,7 @@ func run(pkgs []*packages.Package, cfg Config) []OutParamError {
 }
 
 func loadCfgFromPath(cfgPath string) (Config, error) {
-	cfgBytes, err := ioutil.ReadFile(cfgPath)
+	cfgBytes, err := os.ReadFile(cfgPath)
 	if err != nil {
 		return Config{}, errors.Wrapf(err, "failed to read file %s", cfgPath)
 	}
@@ -211,7 +208,7 @@ func (v *visitor) errorAt(pos token.Pos, method string, argument int) {
 	position := v.pkg.Fset.Position(pos)
 	lines, ok := v.lines[position.Filename]
 	if !ok {
-		contents, err := ioutil.ReadFile(position.Filename)
+		contents, err := os.ReadFile(position.Filename)
 		if err != nil {
 			contents = nil
 		}

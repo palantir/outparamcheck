@@ -7,7 +7,7 @@ package outparamcheck
 
 import (
 	"go/token"
-	"io/ioutil"
+	"os"
 	"path"
 	"testing"
 
@@ -334,11 +334,11 @@ func TestOutParamCheck(t *testing.T) {
 
 	for _, tc := range tcs {
 		// write program to temp file
-		currCaseDir, err := ioutil.TempDir(tmpDir, "")
+		currCaseDir, err := os.MkdirTemp(tmpDir, "")
 		require.NoError(t, err)
 
 		fpath := path.Join(currCaseDir, "main.go")
-		err = ioutil.WriteFile(fpath, []byte(tc.input), 0644)
+		err = os.WriteFile(fpath, []byte(tc.input), 0644)
 		require.NoError(t, err)
 
 		// load package for program
