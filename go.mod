@@ -8,12 +8,12 @@ require (
 	github.com/dustin/go-humanize v1.0.1
 	github.com/nmiyake/pkg/dirs v1.1.0
 	github.com/pkg/errors v0.9.1
-	github.com/stretchr/testify v1.12.0
+	github.com/stretchr/testify v1.12.1
 	golang.org/x/tools v0.49.0
 )
 
 require (
+	go.yaml.in/yaml/v3 v3.0.5 // indirect
 	golang.org/x/mod v0.40.0 // indirect
 	golang.org/x/sync v0.22.0 // indirect
-	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
