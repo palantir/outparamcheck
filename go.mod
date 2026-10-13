@@ -2,7 +2,7 @@ module github.com/palantir/outparamcheck
 
 go 1.27.0
 
-toolchain go1.27.1
+toolchain go1.27.2
 
 require (
 	github.com/dustin/go-humanize v1.1.0
